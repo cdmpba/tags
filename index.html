@@ -55,23 +55,30 @@
 </header>
 <main id="lista">
   <p class="nota">"Con @" sirve para el texto del posteo. "Sin @" sirve para el buscador de "Etiquetar personas" y para el sticker de mención en historias. Máximo 20 menciones por publicación.</p>
+  <p class="nota" id="estado">Cargando cuentas…</p>
 </main>
 <div class="toast" id="toast"></div>
 <script>
-const grupos = [
+const RESPALDO = [
   ["Ministerios públicos", [
     ["mpfcaba","MPF de CABA"],["mpf_chubut","MPF de Chubut"],["mpfcordoba","MPF de Córdoba"],["infominpublico","MP de Corrientes"],["mpajujuy","MPA de Jujuy"],["ministerio_publico_la_pampa","MP de La Pampa"],["mpfmendoza","MPF de Mendoza"],["ministeriopublicomisiones","MP de Misiones"],["mpfneuquen","MPF de Neuquén"],["mprionegrooficial","MP de Río Negro"],["mpasantafe","MPA de Santa Fe"],["ministeriopublicofiscalnacion","MPF de la Nación"],["fiscalespenalesalta","MPF de Salta"],["ministeriopublicocatamarca","MPF de Catamarca"],["mpfch_ok","MPF del Chaco"],["poderjudicialdeentrerios","Entre Ríos (Poder Judicial)"],["poderjudicialformosa","Formosa (Poder Judicial)"],["mpflarioja","MP de La Rioja"],["ministeriopublicosanjuan","MP de San Juan"],["mpfsanluis","MPF de San Luis"],["tsjsantacruz","Santa Cruz (Tribunal Superior)"],["mpfsantiagodelestero","MP de Santiago del Estero"],["justiciatdf","Tierra del Fuego (Justicia)"],["mpftucuman","MP de Tucumán"]
   ]],
-  ["Organizaciones ambientales", [
+  ["Organizaciones", [
     ["farnargentina","FARN"],["abogadesambientalistas","Abogados/as Ambientalistas"],["greenpeacearg","Greenpeace Argentina"],["eco.house","Eco House Global"],["fundacionvidasilvestre","Fundación Vida Silvestre"],["rewilding_argentina","Rewilding Argentina"],["avesargentinas","Aves Argentinas"],["bancodebosques","Banco de Bosques"],["proyungas_oficial","Fundación ProYungas"],["fundaciontemaiken","Fundación Temaikèn"],["janegoodallarg","Instituto Jane Goodall Argentina"],["sustentabilidad_sin_fronteras","Sustentabilidad Sin Fronteras"],["conscientecolectivoarg","Consciente Colectivo"],["jovenesporelclimarg","Jóvenes por el Clima"],["alianzaxelclima","Alianza x el Clima"],["ahoraque_ok","Ahora Qué?"],["ecoderecho.ar","Eco Derecho"],["educacionfev","Fundación Espacios Verdes"],["fundacion.biosfera","Fundación Biosfera"],["fgranchaco","Fundación Gran Chaco"],["500rpm_eolica","Fundación 500RPM"],["sos_humedales","SOS Humedales"],["fundacion.sanar","Fundación SANAR"],["cartoneros_reciclado","Fed. de Cooperativas de Reciclado"],["ecoplasargentina","Ecoplas"],["sistemabarg","Sistema B Argentina"],["faubaverde","FAUBA Verde"],["wcsargentina","WCS Argentina"],["lacwetlands","Wetlands International LAC"],["tallerecologista","Taller Ecologista"],["fundacionazara","Fundación Azara"],["fundacionavina","Fundación Avina"],["350americalatina","350.org América Latina"],["wwf","WWF"],["unep","ONU Medio Ambiente (UNEP)"]
   ]],
-  ["Medios y periodismo ambiental", [
+  ["Medios", [
     ["mongabaylatam","Mongabay Latam"],["revistaanfibia","Revista Anfibia"],["agenciatierraviva","Agencia Tierra Viva"],["pxp_lac","Periodistas por el Planeta"]
   ]],
-  ["Referentes e influencers", [
+  ["Referentes", [
     ["nickibecker","Nicole Becker"],["brunoorodd","Bruno Rodríguez"],["eyalwein","Eyal Weintraub"],["sfederovisky","Sergio Federovisky"]
   ]]
 ];
+
+// ===== CONFIGURACIÓN =====
+// ID de la planilla de Google con las columnas: Sección | Usuario | Nombre
+// La planilla tiene que estar compartida como "Cualquier persona con el enlace: Lector".
+const SHEET_ID = "1a6lEXL7yHtpDnTKlI2LVPE6GBnasfJ4U6dUSx21uL4w";
+// =========================
 
 const KEY = "etiquetas-congreso-ambiental";
 let hechos = new Set();
@@ -80,44 +87,101 @@ try { const s = JSON.parse(localStorage.getItem(KEY) || "{}"); hechos = new Set(
 function guardar(){ try { localStorage.setItem(KEY, JSON.stringify({hechos:[...hechos], conArroba})); } catch (e) {} }
 
 const lista = document.getElementById("lista");
-const total = grupos.reduce((n,g)=>n+g[1].length,0);
-const items = {};
-
-const cortos = ["Ministerios públicos","Organizaciones","Medios","Referentes"];
 const tabsEl = document.getElementById("tabs");
-const secciones = [], tabs = [];
-let actual = 0;
-try { const t = parseInt(localStorage.getItem(KEY + "-tab"), 10); if (t >= 0 && t < grupos.length) actual = t; } catch (e) {}
+let grupos = [], secciones = [], tabs = [], items = {}, total = 0, actual = 0;
+try { const t = parseInt(localStorage.getItem(KEY + "-tab"), 10); if (t >= 0) actual = t; } catch (e) {}
 
-grupos.forEach(([titulo, cuentas], i) => {
-  const tab = document.createElement("button"); tab.className = "tab";
-  tab.innerHTML = cortos[i] + "<small></small>";
-  tab.addEventListener("click", () => mostrar(i));
-  tabsEl.appendChild(tab); tabs.push(tab);
-  const sec = document.createElement("section"); sec.className = "seccion"; lista.appendChild(sec); secciones.push(sec);
-  const h = document.createElement("h2"); h.textContent = titulo + " (" + cuentas.length + ")"; sec.appendChild(h);
-  cuentas.forEach(([u, nombre]) => {
-    const div = document.createElement("div"); div.className = "item";
-    div.innerHTML = '<div class="info"><div class="user"></div><div class="name"></div></div><a class="perfil" target="_blank" rel="noopener">Ver perfil</a><button class="copy">Copiar</button>';
-    div.querySelector(".user").textContent = "@" + u;
-    div.querySelector(".name").textContent = nombre;
-    div.querySelector(".perfil").href = "https://www.instagram.com/" + u + "/";
-    div.querySelector(".copy").addEventListener("click", () => copiar(u));
-    sec.appendChild(div); items[u] = div;
+function limpiarUsuario(v){
+  let u = String(v || "").trim();
+  const m = u.match(/instagram\.com\/([^/?#\s]+)/i);
+  if (m) u = m[1];
+  return u.replace(/^@+/, "").replace(/[/?#].*$/, "").trim().toLowerCase();
+}
+
+function parseCSV(txt){
+  const filas = []; let fila = [], campo = "", comillas = false;
+  for (let i = 0; i < txt.length; i++){
+    const c = txt[i];
+    if (comillas){
+      if (c === '"'){ if (txt[i+1] === '"'){ campo += '"'; i++; } else comillas = false; }
+      else campo += c;
+    } else if (c === '"') comillas = true;
+    else if (c === ","){ fila.push(campo); campo = ""; }
+    else if (c === "\n" || c === "\r"){ if (c === "\r" && txt[i+1] === "\n") i++; fila.push(campo); filas.push(fila); fila = []; campo = ""; }
+    else campo += c;
+  }
+  if (campo !== "" || fila.length){ fila.push(campo); filas.push(fila); }
+  return filas;
+}
+
+function agrupar(filas){
+  const orden = [], mapa = {}, vistos = new Set();
+  filas.slice(1).forEach(f => {
+    const sec = (f[0] || "").trim() || "Otras";
+    const u = limpiarUsuario(f[1]);
+    if (!u || vistos.has(u)) return;
+    vistos.add(u);
+    if (!mapa[sec]){ mapa[sec] = []; orden.push(sec); }
+    mapa[sec].push([u, (f[2] || "").trim()]);
   });
-});
+  return orden.map(s => [s, mapa[s]]);
+}
 
-function mostrar(i){
+async function cargar(){
+  const estado = document.getElementById("estado");
+  try {
+    const url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:csv&t=" + Date.now();
+    const r = await fetch(url, {cache: "no-store"});
+    if (!r.ok) throw new Error(r.status);
+    const g = agrupar(parseCSV(await r.text()));
+    if (!g.length) throw new Error("vacía");
+    construir(g);
+    estado.textContent = "Lista actualizada desde la planilla.";
+  } catch (e) {
+    construir(RESPALDO);
+    estado.textContent = "No se pudo leer la planilla: se muestra la lista guardada.";
+  }
+}
+
+function construir(g){
+  grupos = g; secciones = []; tabs = []; items = {};
+  total = grupos.reduce((n, x) => n + x[1].length, 0);
+  tabsEl.innerHTML = "";
+  lista.querySelectorAll(".seccion").forEach(s => s.remove());
+  grupos.forEach(([titulo, cuentas], i) => {
+    const tab = document.createElement("button"); tab.className = "tab";
+    tab.textContent = titulo; tab.appendChild(document.createElement("small"));
+    tab.addEventListener("click", () => mostrar(i));
+    tabsEl.appendChild(tab); tabs.push(tab);
+    const sec = document.createElement("section"); sec.className = "seccion"; lista.appendChild(sec); secciones.push(sec);
+    const h = document.createElement("h2"); h.textContent = titulo + " (" + cuentas.length + ")"; sec.appendChild(h);
+    cuentas.forEach(([u, nombre]) => {
+      const div = document.createElement("div"); div.className = "item";
+      div.innerHTML = '<div class="info"><div class="user"></div><div class="name"></div></div><a class="perfil" target="_blank" rel="noopener">Ver perfil</a><button class="copy">Copiar</button>';
+      div.querySelector(".user").textContent = "@" + u;
+      div.querySelector(".name").textContent = nombre;
+      div.querySelector(".perfil").href = "https://www.instagram.com/" + u + "/";
+      div.querySelector(".copy").addEventListener("click", () => copiar(u));
+      sec.appendChild(div); items[u] = div;
+    });
+  });
+  if (actual >= grupos.length) actual = 0;
+  mostrar(actual, true);
+  pintar();
+}
+
+function mostrar(i, sinScroll){
   actual = i;
   secciones.forEach((s, k) => s.classList.toggle("on", k === i));
   tabs.forEach((t, k) => t.classList.toggle("on", k === i));
   try { localStorage.setItem(KEY + "-tab", String(i)); } catch (e) {}
-  window.scrollTo(0, 0);
+  if (!sinScroll) window.scrollTo(0, 0);
 }
 
 function pintar(){
   for (const u in items){ const d = items[u]; const ok = hechos.has(u); d.classList.toggle("done", ok); d.querySelector(".copy").textContent = ok ? "✓ Copiada" : "Copiar"; }
-  document.getElementById("prog").textContent = hechos.size + "/" + total;
+  const hechasAca = Object.keys(items).filter(u => hechos.has(u)).length;
+  document.getElementById("prog").textContent = hechasAca + "/" + total;
   grupos.forEach(([, cuentas], i) => {
     const n = cuentas.filter(([u]) => hechos.has(u)).length;
     tabs[i].querySelector("small").textContent = (n === cuentas.length ? "✓ " : "") + n + " de " + cuentas.length + " copiadas";
@@ -146,8 +210,7 @@ async function copiar(u){
 document.getElementById("conArroba").addEventListener("click", ()=>{ conArroba = true; guardar(); pintar(); });
 document.getElementById("sinArroba").addEventListener("click", ()=>{ conArroba = false; guardar(); pintar(); });
 document.getElementById("reset").addEventListener("click", ()=>{ hechos.clear(); guardar(); pintar(); aviso("Listo, empezamos de nuevo"); });
-mostrar(actual);
-pintar();
+cargar();
 </script>
 </body>
 </html>
