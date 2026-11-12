@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etiquetas IG | Congreso Ambiental</title>
+<style>
+  :root{--verde:#1e5631;--verde2:#e8f2ea;--gris:#6b7280;--borde:#e5e7eb;--ok:#15803d}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f7f8f7;color:#111;-webkit-tap-highlight-color:transparent}
+  header{position:sticky;top:0;z-index:5;background:var(--verde);color:#fff;padding:14px 16px 12px}
+  h1{font-size:17px;margin:0 0 4px;line-height:1.25}
+  .sub{font-size:13px;opacity:.85;margin:0}
+  .bar{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .seg{display:flex;background:rgba(255,255,255,.15);border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;color:#fff;font-size:13px;padding:6px 12px;border-radius:999px;font-weight:600}
+  .seg button.on{background:#fff;color:var(--verde)}
+  .prog{font-size:13px;margin-left:auto;font-weight:600}
+  .reset{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:999px;font-size:12px;padding:5px 10px}
+  main{padding:8px 12px 80px;max-width:640px;margin:0 auto}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--verde);margin:18px 4px 8px}
+  .item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--borde);border-radius:12px;padding:10px 10px 10px 12px;margin-bottom:8px}
+  .item.done{background:var(--verde2);border-color:#cfe3d4}
+  .info{flex:1;min-width:0}
+  .user{font-weight:700;font-size:15px;word-break:break-all}
+  .name{font-size:12px;color:var(--gris);margin-top:2px}
+  .perfil{font-size:12px;color:var(--verde);text-decoration:none;white-space:nowrap}
+  .copy{border:0;background:var(--verde);color:#fff;font-weight:700;font-size:14px;border-radius:10px;padding:12px 14px;min-width:92px}
+  .item.done .copy{background:var(--ok)}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:.92}
+  .nota{font-size:12px;color:var(--gris);margin:6px 4px 0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Etiquetas IG · III Congreso Nacional de Fiscalías Ambientales</h1>
+  <p class="sub">Tocá "Copiar" y pegá en Instagram. Las copiadas quedan en verde.</p>
+  <div class="bar">
+    <div class="seg" role="group" aria-label="Formato">
+      <button id="conArroba" class="on">Con @</button>
+      <button id="sinArroba">Sin @</button>
+    </div>
+    <span class="prog" id="prog"></span>
+    <button class="reset" id="reset">Reiniciar</button>
+  </div>
+</header>
+<main id="lista">
+  <p class="nota">"Con @" sirve para el texto del posteo. "Sin @" sirve para el buscador de "Etiquetar personas" y para el sticker de mención en historias. Máximo 20 menciones por publicación.</p>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const grupos = [
+  ["Ministerios públicos", [
+    ["mpfcaba","MPF de CABA"],["mpf_chubut","MPF de Chubut"],["mpfcordoba","MPF de Córdoba"],["infominpublico","MP de Corrientes"],["mpajujuy","MPA de Jujuy"],["ministerio_publico_la_pampa","MP de La Pampa"],["mpfmendoza","MPF de Mendoza"],["ministeriopublicomisiones","MP de Misiones"],["mpfneuquen","MPF de Neuquén"],["mprionegrooficial","MP de Río Negro"],["mpasantafe","MPA de Santa Fe"],["ministeriopublicofiscalnacion","MPF de la Nación"],["fiscalespenalesalta","MPF de Salta"],["ministeriopublicocatamarca","MPF de Catamarca"],["mpfch_ok","MPF del Chaco"],["poderjudicialdeentrerios","Entre Ríos (Poder Judicial)"],["poderjudicialformosa","Formosa (Poder Judicial)"],["mpflarioja","MP de La Rioja"],["ministeriopublicosanjuan","MP de San Juan"],["mpfsanluis","MPF de San Luis"],["tsjsantacruz","Santa Cruz (Tribunal Superior)"],["mpfsantiagodelestero","MP de Santiago del Estero"],["justiciatdf","Tierra del Fuego (Justicia)"],["mpftucuman","MP de Tucumán"]
+  ]],
+  ["Organizaciones ambientales", [
+    ["farnargentina","FARN"],["abogadesambientalistas","Abogados/as Ambientalistas"],["greenpeacearg","Greenpeace Argentina"],["eco.house","Eco House Global"],["fundacionvidasilvestre","Fundación Vida Silvestre"],["rewilding_argentina","Rewilding Argentina"],["avesargentinas","Aves Argentinas"],["bancodebosques","Banco de Bosques"],["proyungas_oficial","Fundación ProYungas"],["fundaciontemaiken","Fundación Temaikèn"],["janegoodallarg","Instituto Jane Goodall Argentina"],["sustentabilidad_sin_fronteras","Sustentabilidad Sin Fronteras"],["conscientecolectivoarg","Consciente Colectivo"],["jovenesporelclimarg","Jóvenes por el Clima"],["alianzaxelclima","Alianza x el Clima"],["ahoraque_ok","Ahora Qué?"],["ecoderecho.ar","Eco Derecho"],["educacionfev","Fundación Espacios Verdes"],["fundacion.biosfera","Fundación Biosfera"],["fgranchaco","Fundación Gran Chaco"],["500rpm_eolica","Fundación 500RPM"],["sos_humedales","SOS Humedales"],["fundacion.sanar","Fundación SANAR"],["cartoneros_reciclado","Fed. de Cooperativas de Reciclado"],["ecoplasargentina","Ecoplas"],["sistemabarg","Sistema B Argentina"],["faubaverde","FAUBA Verde"],["wcsargentina","WCS Argentina"],["lacwetlands","Wetlands International LAC"],["tallerecologista","Taller Ecologista"],["fundacionazara","Fundación Azara"],["fundacionavina","Fundación Avina"],["350americalatina","350.org América Latina"],["wwf","WWF"],["unep","ONU Medio Ambiente (UNEP)"]
+  ]],
+  ["Medios y periodismo ambiental", [
+    ["mongabaylatam","Mongabay Latam"],["revistaanfibia","Revista Anfibia"],["agenciatierraviva","Agencia Tierra Viva"],["pxp_lac","Periodistas por el Planeta"]
+  ]],
+  ["Referentes e influencers", [
+    ["nickibecker","Nicole Becker"],["brunoorodd","Bruno Rodríguez"],["eyalwein","Eyal Weintraub"],["sfederovisky","Sergio Federovisky"]
+  ]]
+];
+
+const KEY = "etiquetas-congreso-ambiental";
+let hechos = new Set();
+let conArroba = true;
+try { const s = JSON.parse(localStorage.getItem(KEY) || "{}"); hechos = new Set(s.hechos || []); if (s.conArroba === false) conArroba = false; } catch (e) {}
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify({hechos:[...hechos], conArroba})); } catch (e) {} }
+
+const lista = document.getElementById("lista");
+const total = grupos.reduce((n,g)=>n+g[1].length,0);
+const items = {};
+
+grupos.forEach(([titulo, cuentas]) => {
+  const h = document.createElement("h2"); h.textContent = titulo + " (" + cuentas.length + ")"; lista.appendChild(h);
+  cuentas.forEach(([u, nombre]) => {
+    const div = document.createElement("div"); div.className = "item";
+    div.innerHTML = '<div class="info"><div class="user"></div><div class="name"></div></div><a class="perfil" target="_blank" rel="noopener">Ver perfil</a><button class="copy">Copiar</button>';
+    div.querySelector(".user").textContent = "@" + u;
+    div.querySelector(".name").textContent = nombre;
+    div.querySelector(".perfil").href = "https://www.instagram.com/" + u + "/";
+    div.querySelector(".copy").addEventListener("click", () => copiar(u));
+    lista.appendChild(div); items[u] = div;
+  });
+});
+
+function pintar(){
+  for (const u in items){ const d = items[u]; const ok = hechos.has(u); d.classList.toggle("done", ok); d.querySelector(".copy").textContent = ok ? "✓ Copiada" : "Copiar"; }
+  document.getElementById("prog").textContent = hechos.size + "/" + total;
+  document.getElementById("conArroba").classList.toggle("on", conArroba);
+  document.getElementById("sinArroba").classList.toggle("on", !conArroba);
+}
+
+function aviso(t){ const el = document.getElementById("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(aviso.t); aviso.t = setTimeout(()=>el.classList.remove("show"), 1400); }
+
+function respaldo(texto){
+  const ta = document.createElement("textarea"); ta.value = texto; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, texto.length);
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta); return ok;
+}
+
+async function copiar(u){
+  const texto = (conArroba ? "@" : "") + u;
+  let ok = false;
+  try { await navigator.clipboard.writeText(texto); ok = true; } catch (e) { ok = respaldo(texto); }
+  if (ok){ hechos.add(u); guardar(); pintar(); aviso("Copiado: " + texto); }
+  else { aviso("No se pudo copiar. Mantené apretado el usuario."); }
+}
+
+document.getElementById("conArroba").addEventListener("click", ()=>{ conArroba = true; guardar(); pintar(); });
+document.getElementById("sinArroba").addEventListener("click", ()=>{ conArroba = false; guardar(); pintar(); });
+document.getElementById("reset").addEventListener("click", ()=>{ hechos.clear(); guardar(); pintar(); aviso("Listo, empezamos de nuevo"); });
+pintar();
+</script>
+</body>
+</html>
