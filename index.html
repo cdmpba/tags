@@ -4,45 +4,83 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Etiquetas IG | Congreso Ambiental</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔵</text></svg>">
+<meta name="theme-color" content="#0d2d5e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--verde:#1e5631;--verde2:#e8f2ea;--gris:#6b7280;--borde:#e5e7eb;--ok:#15803d}
+  /* Paleta MPBA: cambiá estos valores para ajustar los colores de toda la página */
+  :root{
+    --verde:#0d2d5e; --azul2:#16457f; --verde2:#eaf5fd; --gris:#5b6475; --borde:#e3e8f0;
+    --ok:#0a7cc4; --acento:#29a8e0; --fondo:#f2f5fa; --tinta:#0f1b2d;
+    --sombra:0 1px 2px rgba(13,45,94,.06),0 6px 18px rgba(13,45,94,.07);
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f7f8f7;color:#111;-webkit-tap-highlight-color:transparent}
-  header{position:sticky;top:0;z-index:5;background:var(--verde);color:#fff;padding:14px 16px 12px}
-  h1{font-size:17px;margin:0 0 4px;line-height:1.25}
-  .sub{font-size:13px;opacity:.85;margin:0}
-  .bar{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
-  .seg{display:flex;background:rgba(255,255,255,.15);border-radius:999px;padding:3px}
-  .seg button{border:0;background:transparent;color:#fff;font-size:13px;padding:6px 12px;border-radius:999px;font-weight:600}
-  .seg button.on{background:#fff;color:var(--verde)}
-  .prog{font-size:13px;margin-left:auto;font-weight:600}
-  .reset{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:999px;font-size:12px;padding:5px 10px}
-  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
-  .tab{border:2px solid rgba(255,255,255,.55);background:transparent;color:#fff;border-radius:10px;padding:10px 8px;text-align:left;font-size:14px;font-weight:700;line-height:1.2}
-  .tab small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px}
-  .tab.on{background:#fff;color:var(--verde);border-color:#fff}
-  .tab.on small{opacity:1}
+  body{margin:0;font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fondo);color:var(--tinta);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  header{position:sticky;top:0;z-index:5;color:#fff;padding:16px 16px 14px;
+    background:radial-gradient(120% 140% at 100% 0%,rgba(41,168,224,.35) 0%,rgba(41,168,224,0) 55%),linear-gradient(160deg,var(--verde) 0%,var(--azul2) 100%);
+    box-shadow:0 8px 24px rgba(13,45,94,.25)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--acento),#7fd0f2,var(--acento))}
+  .cab{max-width:640px;margin:0 auto}
+  .marca{margin:0 0 12px}
+  .marca img{height:32px;width:auto;display:block}
+  .kicker{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:4px 9px;border-radius:999px;margin-bottom:8px}
+  h1{font-size:19px;margin:0 0 4px;line-height:1.25;font-weight:800;letter-spacing:-.01em}
+  .sub{font-size:13px;opacity:.82;margin:0}
+  .bar{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .seg{display:flex;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;color:#fff;font-size:13px;padding:7px 14px;border-radius:999px;font-weight:700;transition:background .2s,color .2s}
+  .seg button.on{background:#fff;color:var(--verde);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  .prog{font-size:13px;margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums}
+  .reset{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;font-size:12px;font-weight:600;padding:6px 12px}
+  .total{height:6px;border-radius:999px;background:rgba(255,255,255,.18);margin-top:12px;overflow:hidden}
+  .total span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#7fd0f2,#fff);transition:width .4s ease}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .tab{position:relative;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;border-radius:14px;padding:11px 12px 12px;text-align:left;font-size:14px;font-weight:700;line-height:1.2;transition:background .2s,transform .1s}
+  .tab:active{transform:scale(.98)}
+  .tab small{display:block;font-weight:500;font-size:12px;opacity:.8;margin-top:3px}
+  .tab .mini{display:block;height:4px;border-radius:999px;background:rgba(255,255,255,.2);margin-top:8px;overflow:hidden}
+  .tab .mini i{display:block;height:100%;width:0;background:var(--acento);border-radius:inherit;transition:width .4s ease}
+  .tab.on{background:#fff;color:var(--verde);border-color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+  .tab.on small{opacity:.75}
+  .tab.on .mini{background:#dbe7f5}
   .seccion{display:none}
-  .seccion.on{display:block}
-  main{padding:8px 12px 80px;max-width:640px;margin:0 auto}
-  h2{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--verde);margin:18px 4px 8px}
-  .item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--borde);border-radius:12px;padding:10px 10px 10px 12px;margin-bottom:8px}
-  .item.done{background:var(--verde2);border-color:#cfe3d4}
+  .seccion.on{display:block;animation:entra .25s ease}
+  @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  main{padding:10px 14px 90px;max-width:640px;margin:0 auto}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--azul2);margin:20px 4px 10px;font-weight:800}
+  .item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--borde);border-radius:16px;padding:10px 10px 10px 12px;margin-bottom:10px;box-shadow:var(--sombra);transition:background .25s,border-color .25s}
+  .item.done{background:var(--verde2);border-color:#bfe0f5}
+  .avatar{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;letter-spacing:.02em;background:linear-gradient(140deg,var(--azul2),var(--acento))}
+  .g1 .avatar{background:linear-gradient(140deg,#1d5fa8,#4cc3e8)}
+  .g2 .avatar{background:linear-gradient(140deg,#3b3f9c,#6f8ff0)}
+  .g3 .avatar{background:linear-gradient(140deg,#0d6e8c,#3fd0d0)}
+  .item.done .avatar{background:linear-gradient(140deg,var(--ok),#7fd0f2)}
   .info{flex:1;min-width:0}
-  .user{font-weight:700;font-size:15px;word-break:break-all}
-  .name{font-size:12px;color:var(--gris);margin-top:2px}
-  .perfil{font-size:12px;color:var(--verde);text-decoration:none;white-space:nowrap}
-  .copy{border:0;background:var(--verde);color:#fff;font-weight:700;font-size:14px;border-radius:10px;padding:12px 14px;min-width:92px}
-  .item.done .copy{background:var(--ok)}
-  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
-  .toast.show{opacity:.92}
-  .nota{font-size:12px;color:var(--gris);margin:6px 4px 0}
+  .user{font-weight:700;font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .name{font-size:12.5px;color:var(--gris);margin-top:3px;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center}
+  .perfil{color:var(--ok);text-decoration:none;font-weight:600;white-space:nowrap}
+  .copy{flex:none;border:0;background:var(--verde);color:#fff;font-weight:700;font-size:14px;border-radius:12px;padding:11px 14px;min-width:96px;box-shadow:0 3px 10px rgba(13,45,94,.25);transition:background .2s,transform .1s}
+  .copy:active{transform:scale(.96)}
+  .item.done .copy{background:var(--ok);box-shadow:0 3px 10px rgba(10,124,196,.25)}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);background:var(--tinta);color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:nowrap}
+  .toast.show{opacity:.95;transform:translate(-50%,0)}
+  .ayuda{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:12px 14px;margin:12px 0 4px;box-shadow:var(--sombra)}
+  .nota{font-size:12.5px;color:var(--gris);margin:0;line-height:1.45}
+  .nota b{color:var(--tinta)}
+  #estado{margin-top:8px;font-size:12px}
+  @media (min-width:560px){.tabs{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Etiquetas IG · III Congreso Nacional de Fiscalías Ambientales</h1>
-  <p class="sub">Tocá "Copiar" y pegá en Instagram. Las copiadas quedan en verde.</p>
+ <div class="cab">
+  <div class="marca"><img src="https://www.mpba.gov.ar/assets/images/logo2021w.png" alt="Ministerio Público de la Provincia de Buenos Aires" onerror="this.parentNode.remove()"></div>
+  <span class="kicker">Difusión en Instagram</span>
+  <h1>III Congreso Nacional de Fiscalías Ambientales</h1>
+  <p class="sub">Tocá "Copiar" y pegá en Instagram. Las copiadas quedan marcadas en celeste.</p>
   <div class="bar">
     <div class="seg" role="group" aria-label="Formato">
       <button id="conArroba" class="on">Con @</button>
@@ -51,11 +89,15 @@
     <span class="prog" id="prog"></span>
     <button class="reset" id="reset">Reiniciar</button>
   </div>
+  <div class="total" aria-hidden="true"><span id="barraTotal"></span></div>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+ </div>
 </header>
 <main id="lista">
-  <p class="nota">"Con @" sirve para el texto del posteo. "Sin @" sirve para el buscador de "Etiquetar personas" y para el sticker de mención en historias. Máximo 20 menciones por publicación.</p>
-  <p class="nota" id="estado">Cargando cuentas…</p>
+  <div class="ayuda">
+    <p class="nota"><b>Con @</b> para el texto del posteo · <b>Sin @</b> para "Etiquetar personas" y el sticker de mención en historias. Máximo 20 menciones por publicación.</p>
+    <p class="nota" id="estado">Cargando cuentas…</p>
+  </div>
 </main>
 <div class="toast" id="toast"></div>
 <script>
@@ -143,6 +185,15 @@ async function cargar(){
   }
 }
 
+function iniciales(t){
+  const stop = ["de","del","la","el","y","los","las","en","por","para"];
+  let x = String(t).normalize("NFD").replace(/\p{M}/gu, "").replace(/\(.*?\)/g, "").replace(/^\s*MP[AF]?\s+(de|del)\s+/i, "");
+  const p = x.replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).filter(w => w && !stop.includes(w.toLowerCase()));
+  if (!p.length) return String(t).slice(0, 2).toUpperCase();
+  if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
+  return (p[0][0] + p[1][0]).toUpperCase();
+}
+
 function construir(g){
   grupos = g; secciones = []; tabs = []; items = {};
   total = grupos.reduce((n, x) => n + x[1].length, 0);
@@ -150,16 +201,17 @@ function construir(g){
   lista.querySelectorAll(".seccion").forEach(s => s.remove());
   grupos.forEach(([titulo, cuentas], i) => {
     const tab = document.createElement("button"); tab.className = "tab";
-    tab.textContent = titulo; tab.appendChild(document.createElement("small"));
+    tab.textContent = titulo; tab.appendChild(document.createElement("small")); const mini = document.createElement("span"); mini.className = "mini"; mini.appendChild(document.createElement("i")); tab.appendChild(mini);
     tab.addEventListener("click", () => mostrar(i));
     tabsEl.appendChild(tab); tabs.push(tab);
     const sec = document.createElement("section"); sec.className = "seccion"; lista.appendChild(sec); secciones.push(sec);
     const h = document.createElement("h2"); h.textContent = titulo + " (" + cuentas.length + ")"; sec.appendChild(h);
     cuentas.forEach(([u, nombre]) => {
       const div = document.createElement("div"); div.className = "item";
-      div.innerHTML = '<div class="info"><div class="user"></div><div class="name"></div></div><a class="perfil" target="_blank" rel="noopener">Ver perfil</a><button class="copy">Copiar</button>';
+      div.innerHTML = '<div class="avatar" aria-hidden="true"></div><div class="info"><div class="user"></div><div class="name"><span class="nom"></span><a class="perfil" target="_blank" rel="noopener">Ver perfil ↗</a></div></div><button class="copy">Copiar</button>';
+      div.querySelector(".avatar").textContent = iniciales(nombre || u);
       div.querySelector(".user").textContent = "@" + u;
-      div.querySelector(".name").textContent = nombre;
+      div.querySelector(".nom").textContent = nombre; if (!nombre) div.querySelector(".nom").remove(); div.classList.add("g" + (i % 4));
       div.querySelector(".perfil").href = "https://www.instagram.com/" + u + "/";
       div.querySelector(".copy").addEventListener("click", () => copiar(u));
       sec.appendChild(div); items[u] = div;
@@ -182,9 +234,11 @@ function pintar(){
   for (const u in items){ const d = items[u]; const ok = hechos.has(u); d.classList.toggle("done", ok); d.querySelector(".copy").textContent = ok ? "✓ Copiada" : "Copiar"; }
   const hechasAca = Object.keys(items).filter(u => hechos.has(u)).length;
   document.getElementById("prog").textContent = hechasAca + "/" + total;
+  document.getElementById("barraTotal").style.width = (total ? hechasAca / total * 100 : 0) + "%";
   grupos.forEach(([, cuentas], i) => {
     const n = cuentas.filter(([u]) => hechos.has(u)).length;
     tabs[i].querySelector("small").textContent = (n === cuentas.length ? "✓ " : "") + n + " de " + cuentas.length + " copiadas";
+    tabs[i].querySelector(".mini i").style.width = (cuentas.length ? n / cuentas.length * 100 : 0) + "%";
   });
   document.getElementById("conArroba").classList.toggle("on", conArroba);
   document.getElementById("sinArroba").classList.toggle("on", !conArroba);
